@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: true,
+  STREET_MAPS_TILE: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  WIKI_MAPS_TILE: 'http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
+  MAPS_ATTRIBUTE: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 };
 
 /*

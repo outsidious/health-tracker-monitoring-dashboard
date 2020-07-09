@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { icon, latLng, marker, tileLayer } from 'leaflet';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -8,13 +9,13 @@ import { icon, latLng, marker, tileLayer } from 'leaflet';
 })
 export class AppComponent {
    // Define our base layers so we can reference them multiple times
-  streetMaps = tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  streetMaps = tileLayer(environment.STREET_MAPS_TILE, {
     detectRetina: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: environment.MAPS_ATTRIBUTE
   });
-  wMaps = tileLayer('http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+  wMaps = tileLayer(environment.WIKI_MAPS_TILE, {
     detectRetina: true,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: environment.MAPS_ATTRIBUTE
   });
 
   // First Marker
