@@ -9,13 +9,13 @@ import { environment } from '../../environments/environment';
 })
 export class MapComponent {
    // Define our base layers so we can reference them multiple times
-  streetMaps = tileLayer(environment.STREET_MAPS_TILE, {
+  streetMaps = tileLayer(environment.maps.street_title, {
     detectRetina: true,
-    attribution: environment.MAPS_ATTRIBUTE
+    attribution: environment.maps.attribute
   });
-  wMaps = tileLayer(environment.WIKI_MAPS_TILE, {
+  wMaps = tileLayer(environment.maps.wiki_title, {
     detectRetina: true,
-    attribution: environment.MAPS_ATTRIBUTE
+    attribution: environment.maps.attribute
   });
 
   // First Marker
