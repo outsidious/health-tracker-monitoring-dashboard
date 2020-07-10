@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
+  production: false,
   maps: {
         street_title: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         wiki_title: 'http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
