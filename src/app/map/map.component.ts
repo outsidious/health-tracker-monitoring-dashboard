@@ -26,7 +26,7 @@ export class MapComponent {
       iconUrl: 'leaflet/marker-icon.png',
       shadowUrl: 'leaflet/marker-shadow.png'
     })
-  });
+  }).on('click', (data) => { alert("I have a click.") });
 
   // Second Marker
   paradise = marker([ 46.78465227596462,-121.74141269177198 ], {
@@ -36,7 +36,7 @@ export class MapComponent {
       iconUrl: 'leaflet/marker-icon.png',
       shadowUrl: 'leaflet/marker-shadow.png'
     })
-  });
+  }).on('click', (data) => { alert("I have a click.") });
 
 
   // Layers control object with our two base layers a nd the two overlay layers
