@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import {
   AfterContentChecked,
@@ -12,8 +13,13 @@ import {
   SimpleChanges
 } from '@angular/core';
 
+export interface DialogData {
+	marker_id: string;
+	some_data: string;
+}
+
 @Component({
-  selector: 'app-example-dialog',
+	selector: 'app-dialog',
   templateUrl: 'dialog.component.html'
 })
 export class DialogComponent implements OnInit, AfterContentChecked,
@@ -24,7 +30,8 @@ export class DialogComponent implements OnInit, AfterContentChecked,
   OnChanges,
   OnDestroy{
 
-  constructor(private dialogRef: MatDialogRef<DialogComponent>) { }
+	constructor(private dialogRef: MatDialogRef<DialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
     console.log(`OnInit`);

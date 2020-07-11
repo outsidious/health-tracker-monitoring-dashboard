@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MarkerComponent } from '../marker/marker.component';
 import { DataService } from '../marker/data.service';
 import {DialogComponent} from "../dialog/dialog.component";
+import { Identifiers } from '@angular/compiler';
 
 interface MarkerMetaData {
   name: String;
@@ -61,7 +62,7 @@ export class MapComponent {
 
       //add Event Listener for Click to open a new Modal
       m.addEventListener("click", ()=> {
-        this.zone.run(() => {this.openExampleDialog();})
+        this.zone.run(() => {this.openExampleDialog(entry);})
       })
 
       // finally add the marker to the map s.t. it is visible
@@ -77,14 +78,14 @@ export class MapComponent {
     }
   }
 
-  private openExampleDialog() {
+  private openExampleDialog(Marker) {
     this.dialog.open(DialogComponent, {
-      data: {exampleData: ""},
+      data: {marker_id: Marker.id, some_data: Marker.description},
       width: "auto"
     });
   }
 
-  // Layers control object with our two base layers a nd the two overlay layers
+  // Layers control object with our two base layers
   layersControl = {
     baseLayers: {
       'Street Maps': this.streetMaps,
@@ -92,7 +93,7 @@ export class MapComponent {
     },
   };
 
-  // Set the initial set of displayed layers (we could also use the leafletLayers input binding for this)
+  // Set the initial set of displayed layers
   options = {
     layers: [ this.streetMaps ],
     zoom: 8,
