@@ -58,7 +58,14 @@ export class MapComponent {
 
 
       // create a new Leaflet marker at the given position
-      let m = marker(entry.position);
+      let m = marker(entry.position, {
+        icon: icon({
+          iconSize: [ 25, 41 ],
+          iconAnchor: [ 13, 41 ],
+          iconUrl: 'assets/map/marker-icon.png',
+          shadowUrl: 'assets/map/marker-shadow.png'
+        })
+      });
 
       //add Event Listener for Click to open a new Modal
       m.addEventListener("click", ()=> {
