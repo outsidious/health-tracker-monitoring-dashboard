@@ -46,7 +46,7 @@ export class MapComponent {
       // dynamically instantiate a HTMLMarkerComponent
       const factory = this.resolver.resolveComponentFactory(MarkerComponent);
 
-      // we need to pass in the dependency injector
+       // we need to pass in the dependency injector
       const component = factory.create(this.injector);
 
       // wire up the @Input() or plain variables (doesn't have to be strictly an @Input())
