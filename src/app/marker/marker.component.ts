@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DataService } from './data.service';
+import { MarkersService } from './markers.service';
 
 @Component({
   selector: 'app-marker',

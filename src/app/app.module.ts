@@ -6,7 +6,7 @@ import {MapComponent} from './map/map.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MarkerComponent } from './marker/marker.component';
 import { DialogComponent } from "./dialog/dialog.component";
-import { DataService } from './marker/data.service';
+import { MarkersService } from './marker/markers.service';
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -27,7 +27,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     MatDialogModule,
     MatProgressSpinnerModule
   ],
-  providers: [ DataService ],
+  providers: [ MarkersService ],
   entryComponents: [MarkerComponent, DialogComponent],
   bootstrap: [AppComponent]
 })

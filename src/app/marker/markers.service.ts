@@ -9,7 +9,7 @@ export class Marker {
 }
 
 @Injectable()
-export class DataService {
+export class MarkersService {
   markers: Marker[] = [
     {
       id: 1,

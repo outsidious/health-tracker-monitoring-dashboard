@@ -3,7 +3,7 @@ import { icon, latLng, marker, tileLayer, Marker, LatLng} from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 import { MarkerComponent } from '../marker/marker.component';
-import { DataService } from '../marker/data.service';
+import { MarkersService } from '../marker/markers.service';
 import {DialogComponent} from "../dialog/dialog.component";
 import { Identifiers } from '@angular/compiler';
 
@@ -31,7 +31,7 @@ export class MapComponent {
     attribution: environment.maps.attribute
   });
 
-  constructor(private dataService: DataService, private resolver: ComponentFactoryResolver, private injector: Injector, private dialog: MatDialog, private zone: NgZone){}
+  constructor(private dataService: MarkersService, private resolver: ComponentFactoryResolver, private injector: Injector, private dialog: MatDialog, private zone: NgZone){}
 
   onMapReady(map) {
     // get a local reference to the map as we need it later
