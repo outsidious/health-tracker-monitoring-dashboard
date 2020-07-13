@@ -62,8 +62,8 @@ export class MapComponent {
         icon: icon({
           iconSize: [ 25, 41 ],
           iconAnchor: [ 13, 41 ],
-          iconUrl: 'assets/map/marker-icon.png',
-          shadowUrl: 'assets/map/marker-shadow.png'
+          iconUrl: environment.markers.icon_url,
+          shadowUrl: environment.markers.shadow_url
         })
       });
 
