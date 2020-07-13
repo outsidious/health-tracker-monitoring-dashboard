@@ -67,10 +67,7 @@ export class MapComponent {
         })
       });
 
-      //add Event Listener for Click to open a new Modal
-      m.addEventListener("click", ()=> {
-        this.zone.run(() => {this.openExampleDialog(entry);})
-      })
+      m.on('click', () => {this.zone.run(() => {this.handleMarkerClick(entry.id)});})
 
       // finally add the marker to the map s.t. it is visible
       m.addTo(this.map);
@@ -85,10 +82,11 @@ export class MapComponent {
     }
   }
 
-  private openExampleDialog(Marker) {
-    this.dialog.open(DialogComponent, {
-      data: {marker_id: Marker.id, some_data: Marker.description},
-      width: "auto"
+  private handleMarkerClick(MarkerId) {
+    let m = this.dataService.getMarkerById(MarkerId);
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {marker_id: m.id, some_data: m.description},
+      width: 'auto'
     });
   }
 
