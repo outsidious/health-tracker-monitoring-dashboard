@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LatLngExpression} from 'leaflet';
+import { of } from 'rxjs';
 
 export class Marker {
   id: number;
@@ -26,7 +27,7 @@ export class MarkersService {
   ];
 
   getMarkers() {
-    return this.markers;
+    return of(this.markers);
   }
 
   getMarkerById(id) {
