@@ -1,5 +1,5 @@
 import { Component, OnInit, ComponentFactoryResolver, ComponentRef, Injector, DoCheck, NgZone } from '@angular/core';
-import { icon, latLng, marker, tileLayer, Marker, LatLng} from 'leaflet';
+import { icon, latLng, marker, tileLayer, Marker, LatLng, Map} from 'leaflet';
 import { environment } from '../../environments/environment';
 import { MatDialog } from '@angular/material/dialog';
 import { MarkerComponent } from '../marker/marker.component';
@@ -19,7 +19,7 @@ interface MarkerMetaData {
   styleUrls: ['./map.component.css']
 })
 export class MapComponent {
-  map;
+  map: Map;
   markers: MarkerMetaData[] = [];
    // Define our base layers so we can reference them multiple times
   streetMaps = tileLayer(environment.maps.street_title, {

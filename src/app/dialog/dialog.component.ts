@@ -14,7 +14,7 @@ export interface DialogData {
 export class DialogComponent
 {
 	constructor(private dialogRef: MatDialogRef<DialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+	@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   public close(){
     this.dialogRef.close();
