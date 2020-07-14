@@ -12,22 +12,22 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		MapComponent,
-		MarkerComponent,
-		DialogComponent,
-	],
-	imports: [
-		BrowserModule,
-		LeafletModule,
-		BrowserAnimationsModule,
-		MatButtonModule,
-		MatDialogModule,
-		MatProgressSpinnerModule,
-	],
-	providers: [MarkersService],
-	entryComponents: [MarkerComponent, DialogComponent],
-	bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        MapComponent,
+        MarkerComponent,
+        DialogComponent,
+    ],
+    imports: [
+        BrowserModule,
+        LeafletModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+    ],
+    providers: [MarkersService],
+    entryComponents: [MarkerComponent, DialogComponent],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}
