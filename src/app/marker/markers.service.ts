@@ -4,12 +4,11 @@ import { of } from "rxjs";
 import { HttpClient} from '@angular/common/http';
 
 
-
 @Injectable()
 export class MarkersService {
     constructor(private http: HttpClient){ }
 
     getMarkers() {
-        return this.http.get('assets/user.json')
+        return this.http.get('assets/test_locations.json')
     }
 }
