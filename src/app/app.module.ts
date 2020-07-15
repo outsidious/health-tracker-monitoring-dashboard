@@ -10,6 +10,7 @@ import { MarkersService } from "./marker/markers.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { HttpClientModule }   from '@angular/common/http';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
         MatButtonModule,
         MatDialogModule,
         MatProgressSpinnerModule,
+        HttpClientModule,
     ],
     providers: [MarkersService],
     entryComponents: [MarkerComponent, DialogComponent],

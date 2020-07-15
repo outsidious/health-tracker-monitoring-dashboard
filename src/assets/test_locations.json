@@ -1,0 +1,22 @@
+[
+    {
+        "deviceId": "1",
+        "sensorType": "location",
+        "currentValue": [144.78, 150.32]
+    },
+    {
+        "deviceId": "1",
+        "sensorType": "location",
+        "currentValue": [666.66, 777.77]
+    },
+    {
+        "deviceId": "1",
+        "sensorType": "location",
+        "currentValue": [3.4, 54.4]
+    },
+    {
+        "deviceId": "1",
+        "sensorType": "location",
+        "currentValue": [564.4, 454.4]
+    }
+]
