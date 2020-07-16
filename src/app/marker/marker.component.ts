@@ -6,7 +6,7 @@ import { LatLngExpression } from "leaflet";
     template: "marker.component.html",
 })
 export class MarkerComponent {
-    deviceID: String;
+    deviceId: String;
     sensorType: String;
     currentValue: LatLngExpression;
 }

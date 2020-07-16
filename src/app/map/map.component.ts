@@ -44,7 +44,7 @@ export class MapComponent {
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
         private dialog: MatDialog,
-        private zone: NgZone
+        private zone: NgZone,
     ) {}
 
     onMapReady(map) {
@@ -56,57 +56,60 @@ export class MapComponent {
     addMarkers() {
         // simply iterate over the array of markers from our data service
         // and add them to the map
-        this.dataService.getMarkers().subscribe((data) => this.markers=data["locationList"]);
-        
-        for (const entry of this.markers) { 
-            // dynamically instantiate a HTMLMarkerComponent
-            /*
-            const factory = this.resolver.resolveComponentFactory(
-                MarkerComponent
-            );
-
-            // we need to pass in the dependency injector
-            const component = factory.create(this.injector);
-
-            // wire up the @Input() or plain variables (doesn't have to be strictly an @Input())
-            component.instance.data = entry;
-
-            // we need to manually trigger change detection on our in-memory component
-            // s.t. its template syncs with the data we passed in
-            component.changeDetectorRef.detectChanges();
-            */
-            // create a new Leaflet marker at the given position
-            let m = marker(entry.currentValue, {
-                icon: icon({
-                    iconSize: [25, 41],
-                    iconAnchor: [13, 41],
-                    iconUrl: environment.markers.icon_url,
-                    shadowUrl: environment.markers.shadow_url,
-                }),
-            });
-
-            m.on("click", () => {
-                this.zone.run(() => {
-                    this.handleMarkerClick(entry.deviceID);
+        this.dataService.getMarkers().subscribe(data => {
+            this.markers=data["locationList"];
+            for (const entry of this.markers) {
+                // dynamically instantiate a HTMLMarkerComponent
+                /*
+                const factory = this.resolver.resolveComponentFactory(
+                    MarkerComponent
+                );
+    
+                // we need to pass in the dependency injector
+                const component = factory.create(this.injector);
+    
+                // wire up the @Input() or plain variables (doesn't have to be strictly an @Input())
+                component.instance.data = entry;
+    
+                // we need to manually trigger change detection on our in-memory component
+                // s.t. its template syncs with the data we passed in
+                component.changeDetectorRef.detectChanges();
+                */
+                // create a new Leaflet marker at the given position
+                let m = marker(entry.currentValue, {
+                    icon: icon({
+                        iconSize: [25, 41],
+                        iconAnchor: [13, 41],
+                        iconUrl: environment.markers.icon_url,
+                        shadowUrl: environment.markers.shadow_url,
+                    }),
                 });
-            });
 
-            // finally add the marker to the map s.t. it is visible
-            m.addTo(this.map);
+                m.on("click", () => {
+                    this.zone.run(() => {
+                        this.handleMarkerClick(entry.deviceId);
+                    });
+                });
 
-            // add a metadata object into a local array which helps us
-            // keep track of the instantiated markers for removing/disposing them later
-        }
+    
+                // finally add the marker to the map s.t. it is visible
+                m.addTo(this.map); 
+    
+                // add a metadata object into a local array which helps us
+                // keep track of the instantiated markers for removing/disposing them later
+            }
+        });
     }
 
-    getMarkerById(id) {
-        return this.markers.filter((entry) => entry.deviceID === id)[0];
+
+    getMarkerById(id) { 
+        return this.markers.filter((entry) => entry.deviceId === id)[0];
     }
 
-    private handleMarkerClick(MarkerId) {
-        let m = this.getMarkerById(MarkerId);
+    private handleMarkerClick(id) {
+        let m = this.getMarkerById(id);
         const dialogRef = this.dialog.open(DialogComponent, {
-            data: { marker_id: m.deviceID, some_data: "empty" },
+            data: { marker_id: m.deviceId, some_data: m.currentValue },
             width: "auto",
         });
     }

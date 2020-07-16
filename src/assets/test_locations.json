@@ -3,12 +3,12 @@
         {
             "deviceId": "1",
             "sensorType": "location",
-            "currentValue": [144.78, 150.32]
+            "currentValue": [14.78, 15.32]
         },
         {
             "deviceId": "2",
             "sensorType": "location",
-            "currentValue": [666.66, 777.77]
+            "currentValue": [6.66, 77.77]
         },
         {
             "deviceId": "3",
@@ -18,7 +18,7 @@
         {
             "deviceId": "4",
             "sensorType": "location",
-            "currentValue": [564.4, 454.4]
+            "currentValue": [56.4, 44.4]
         }
     ]
 }
