@@ -14,12 +14,11 @@ import { HttpMarkerComponent } from "../marker/http_marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
 import { Identifiers } from "@angular/compiler";
+import { Observable } from 'rxjs';
+import { interval } from 'rxjs';
+import { map } from 'rxjs/operators'
 
-/*interface MarkerMetaData {
-    name: String;
-    markerInstance: Marker;
-    componentInstance: ComponentRef<MarkerComponent>;
-}*/
+
 
 @Component({
     selector: "app-map",
@@ -61,12 +60,16 @@ export class MapComponent {
             //console.log(currentTimeMseconds);
             for (const entry of this.markers) {
                 let MarkerTimeMseconds = Date.parse(entry.timeStamp);
+                let MarkerIconType = environment.markers.icon_blue_url
+                if (currentTimeMseconds - MarkerTimeMseconds > environment.time.online_delay) {
+                    MarkerIconType = environment.markers.icon_grey_url
+                }
                 //console.log(MarkerTimeMseconds);
                 let m = marker(entry.currentValue, {
                     icon: icon({
                         iconSize: [25, 41],
                         iconAnchor: [13, 41],
-                        iconUrl: environment.markers.icon_url,
+                        iconUrl: MarkerIconType,
                         shadowUrl: environment.markers.shadow_url,
                     }),
                 });
@@ -95,7 +98,7 @@ export class MapComponent {
     private handleMarkerClick(id) {
         let m = this.getMarkerById(id);
         const dialogRef = this.dialog.open(DialogComponent, {
-            data: { marker_id: m.deviceId, some_data: m.currentValue },
+            data: { marker_id: m.deviceId, some_data: m.timeStamp },
             width: "auto",
         });
     }
