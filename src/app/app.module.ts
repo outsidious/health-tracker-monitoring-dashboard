@@ -4,7 +4,7 @@ import { LeafletModule } from "@asymmetrik/ngx-leaflet";
 import { AppComponent } from "./app.component";
 import { MapComponent } from "./map/map.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MarkerComponent } from "./marker/marker.component";
+import { HttpMarkerComponent } from "./marker/http_marker.component";
 import { DialogComponent } from "./dialog/dialog.component";
 import { MarkersService } from "./marker/markers.service";
 import { MatButtonModule } from "@angular/material/button";
@@ -16,7 +16,7 @@ import { HttpClientModule }   from '@angular/common/http';
     declarations: [
         AppComponent,
         MapComponent,
-        MarkerComponent,
+        HttpMarkerComponent,
         DialogComponent,
     ],
     imports: [
@@ -29,7 +29,7 @@ import { HttpClientModule }   from '@angular/common/http';
         HttpClientModule,
     ],
     providers: [MarkersService],
-    entryComponents: [MarkerComponent, DialogComponent],
+    entryComponents: [HttpMarkerComponent, DialogComponent],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

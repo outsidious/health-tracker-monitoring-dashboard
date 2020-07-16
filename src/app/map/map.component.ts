@@ -10,7 +10,7 @@ import {
 import { icon, latLng, marker, tileLayer, Marker, LatLng, Map } from "leaflet";
 import { environment } from "../../environments/environment";
 import { MatDialog } from "@angular/material/dialog";
-import { MarkerComponent } from "../marker/marker.component";
+import { HttpMarkerComponent } from "../marker/http_marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
 import { Identifiers } from "@angular/compiler";
@@ -28,7 +28,7 @@ import { Identifiers } from "@angular/compiler";
 })
 export class MapComponent {
     map: Map;
-    markers: MarkerComponent[] = [];
+    markers: HttpMarkerComponent[] = [];
     // Define our base layers so we can reference them multiple times
     streetMaps = tileLayer(environment.maps.street_title, {
         detectRetina: true,
