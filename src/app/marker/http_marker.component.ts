@@ -7,6 +7,7 @@ import { LatLngExpression } from "leaflet";
 })
 export class HttpMarkerComponent {
     deviceId: String;
-    sensorType: String;
     currentValue: LatLngExpression;
+    timeStamp: string;
 }
+ 
