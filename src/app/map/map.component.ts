@@ -90,7 +90,6 @@ export class MapComponent {
         });
     }
 
-
     getMarkerById(id) { 
         return this.markers.filter((entry) => entry.deviceId === id)[0];
     }
