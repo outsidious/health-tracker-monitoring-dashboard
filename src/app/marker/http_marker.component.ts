@@ -6,7 +6,7 @@ import { LatLngExpression } from "leaflet";
     template: "http_marker.component.html",
 })
 export class HttpMarkerComponent {
-    deviceId: String;
+    deviceId: string;
     currentValue: LatLngExpression;
     timeStamp: string;
 }
