@@ -23,8 +23,8 @@ import { switchMap } from "rxjs/operators";
 })
 export class MapComponent {
     map: Map;
-    HttpMarkers: HttpMarkerComponent[] = [];
-    vizual_markers: Marker[] = [];
+    httpMarkers: HttpMarkerComponent[] = [];
+    vizualMarkers: Marker[] = [];
     subscription: Subscription;
     // Define our base layers so we can reference them multiple times
     streetMaps = tileLayer(environment.maps.street_title, {
@@ -46,24 +46,24 @@ export class MapComponent {
 
     onMapReady(map) {
         this.map = map;
-        this.UpdateMarkers();
+        this.updateMarkers();
     }
 
-    UpdateMarkers() {
+    updateMarkers() {
         this.subscription = timer(0, environment.time.update_time)
             .pipe(switchMap(() => this.dataService.getMarkers()))
             .subscribe((data) => {
-                this.HttpMarkers = data["locationList"];
+                this.httpMarkers = data["locationList"];
                 let currentTime = new Date().toISOString();
                 let currentTimeMseconds = Date.parse(currentTime);
-                for (const entry of this.HttpMarkers) {
-                    let MarkerTimeMseconds = Date.parse(entry.timeStamp);
-                    let MarkerIconType = environment.markers.icon_blue_url;
+                for (const entry of this.httpMarkers) {
+                    let markerTimeMseconds = Date.parse(entry.timeStamp);
+                    let markerIconType = environment.markers.icon_blue_url;
                     if (
-                        currentTimeMseconds - MarkerTimeMseconds >
+                        currentTimeMseconds - markerTimeMseconds >
                         environment.time.online_delay
                     ) {
-                        MarkerIconType = environment.markers.icon_grey_url;
+                        markerIconType = environment.markers.icon_grey_url;
                     }
                     let m = this.getVizualMarkerById(entry.deviceId);
                     if (m != undefined) {
@@ -71,7 +71,7 @@ export class MapComponent {
                             icon({
                                 iconSize: [25, 41],
                                 iconAnchor: [13, 41],
-                                iconUrl: MarkerIconType,
+                                iconUrl: markerIconType,
                                 shadowUrl: environment.markers.shadow_url,
                             })
                         );
@@ -81,7 +81,7 @@ export class MapComponent {
                             icon: icon({
                                 iconSize: [25, 41],
                                 iconAnchor: [13, 41],
-                                iconUrl: MarkerIconType,
+                                iconUrl: markerIconType,
                                 shadowUrl: environment.markers.shadow_url,
                             }),
                             title: entry.deviceId,
@@ -94,18 +94,18 @@ export class MapComponent {
                         });
 
                         m.addTo(this.map);
-                        this.vizual_markers.push(m);
+                        this.vizualMarkers.push(m);
                     }
                 }
             });
     }
 
     getMarkerById(id) {
-        return this.HttpMarkers.filter((entry) => entry.deviceId === id)[0];
+        return this.httpMarkers.filter((entry) => entry.deviceId === id)[0];
     }
 
     getVizualMarkerById(id) {
-        return this.vizual_markers.filter(
+        return this.vizualMarkers.filter(
             (entry) => entry.options.title === id
         )[0];
     }
@@ -113,7 +113,7 @@ export class MapComponent {
     private handleMarkerClick(id) {
         let m = this.getMarkerById(id);
         const dialogRef = this.dialog.open(DialogComponent, {
-            data: { marker_id: m.deviceId, some_data: m.timeStamp },
+            data: { markerId: m.deviceId, someData: m.timeStamp },
             width: "auto",
         });
     }
