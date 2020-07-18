@@ -3,9 +3,9 @@ import { LatLngExpression } from "leaflet";
 
 @Component({
     selector: "app-marker",
-    template: "http_marker.component.html",
+    template: "marker.component.html",
 })
-export class HttpMarkerComponent {
+export class MarkerComponent {
     deviceId: string;
     currentValue: LatLngExpression;
     timeStamp: string;

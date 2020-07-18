@@ -10,7 +10,7 @@ import {
 import { icon, latLng, marker, tileLayer, Marker, LatLng, Map } from "leaflet";
 import { environment } from "../../environments/environment";
 import { MatDialog } from "@angular/material/dialog";
-import { HttpMarkerComponent } from "../marker/http_marker.component";
+import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
 import { Subscription, timer } from "rxjs";
@@ -23,7 +23,7 @@ import { switchMap } from "rxjs/operators";
 })
 export class MapComponent {
     map: Map;
-    httpMarkers: HttpMarkerComponent[] = [];
+    httpMarkers: MarkerComponent[] = [];
     vizualMarkers: Marker[] = [];
     subscription: Subscription;
     // Define our base layers so we can reference them multiple times
