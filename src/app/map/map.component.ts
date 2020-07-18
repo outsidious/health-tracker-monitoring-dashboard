@@ -13,11 +13,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { HttpMarkerComponent } from "../marker/http_marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { Subscription, timer } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-
-
-
+import { Subscription, timer } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 @Component({
     selector: "app-map",
@@ -44,7 +41,7 @@ export class MapComponent {
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
         private dialog: MatDialog,
-        private zone: NgZone,
+        private zone: NgZone
     ) {}
 
     onMapReady(map) {
@@ -53,28 +50,33 @@ export class MapComponent {
     }
 
     UpdateMarkers() {
-        this.subscription = timer(0, environment.time.update_time).pipe(
-            switchMap(() => this.dataService.getMarkers())).subscribe(data => {
+        this.subscription = timer(0, environment.time.update_time)
+            .pipe(switchMap(() => this.dataService.getMarkers()))
+            .subscribe((data) => {
                 this.HttpMarkers = data["locationList"];
                 let currentTime = new Date().toISOString();
                 let currentTimeMseconds = Date.parse(currentTime);
                 for (const entry of this.HttpMarkers) {
                     let MarkerTimeMseconds = Date.parse(entry.timeStamp);
-                    let MarkerIconType = environment.markers.icon_blue_url
-                    if (currentTimeMseconds - MarkerTimeMseconds > environment.time.online_delay) {
-                        MarkerIconType = environment.markers.icon_grey_url
+                    let MarkerIconType = environment.markers.icon_blue_url;
+                    if (
+                        currentTimeMseconds - MarkerTimeMseconds >
+                        environment.time.online_delay
+                    ) {
+                        MarkerIconType = environment.markers.icon_grey_url;
                     }
-                    let m = this.getVizualMarkerById(entry.deviceId)
+                    let m = this.getVizualMarkerById(entry.deviceId);
                     if (m != undefined) {
-                        m.setIcon(icon({
-                            iconSize: [25, 41],
-                            iconAnchor: [13, 41],
-                            iconUrl: MarkerIconType,
-                            shadowUrl: environment.markers.shadow_url,
-                        }));
+                        m.setIcon(
+                            icon({
+                                iconSize: [25, 41],
+                                iconAnchor: [13, 41],
+                                iconUrl: MarkerIconType,
+                                shadowUrl: environment.markers.shadow_url,
+                            })
+                        );
                         m.setLatLng(entry.currentValue);
-                    }
-                    else {
+                    } else {
                         m = marker(entry.currentValue, {
                             icon: icon({
                                 iconSize: [25, 41],
@@ -93,17 +95,19 @@ export class MapComponent {
 
                         m.addTo(this.map);
                         this.vizual_markers.push(m);
-                    } 
-            }
-        });
+                    }
+                }
+            });
     }
 
-    getMarkerById(id) { 
+    getMarkerById(id) {
         return this.HttpMarkers.filter((entry) => entry.deviceId === id)[0];
     }
 
-    getVizualMarkerById(id) { 
-        return this.vizual_markers.filter((entry) => entry.options.title === id)[0];
+    getVizualMarkerById(id) {
+        return this.vizual_markers.filter(
+            (entry) => entry.options.title === id
+        )[0];
     }
 
     private handleMarkerClick(id) {
@@ -126,6 +130,6 @@ export class MapComponent {
     options = {
         layers: [this.streetMaps],
         zoom: 3,
-        center: latLng([20.000, 50.000]),
+        center: latLng([20.0, 50.0]),
     };
 }

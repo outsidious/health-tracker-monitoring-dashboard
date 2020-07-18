@@ -4,13 +4,13 @@
             "deviceId": "1",
             "sensorType": "location",
             "currentValue": [14.78, 15.32],
-            "timeStamp": "2020-07-17T09:50:00Z"
+            "timeStamp": "2020-07-17T10:19:00Z"
         },
         {
             "deviceId": "2",
             "sensorType": "location",
             "currentValue": [6.66, 77.77],
-            "timeStamp": "2020-07-17T09:50:00Z"
+            "timeStamp": "2020-07-17T10:19:00Z"
         },
         {
             "deviceId": "3",
