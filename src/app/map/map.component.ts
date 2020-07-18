@@ -23,7 +23,7 @@ import { switchMap } from "rxjs/operators";
 })
 export class MapComponent {
     map: Map;
-    httpMarkers: MarkerComponent[] = [];
+    markers: any;
     vizualMarkers: Marker[] = [];
     subscription: Subscription;
     // Define our base layers so we can reference them multiple times
@@ -53,17 +53,15 @@ export class MapComponent {
         this.subscription = timer(0, environment.time.update_time)
             .pipe(switchMap(() => this.dataService.getMarkers()))
             .subscribe((data) => {
-                this.httpMarkers = data["locationList"];
+                this.markers = data;
                 let currentTime = new Date().toISOString();
                 let currentTimeMseconds = Date.parse(currentTime);
-                for (const entry of this.httpMarkers) {
+                for (const entry of this.markers) {
                     let markerTimeMseconds = Date.parse(entry.timeStamp);
-                    let markerIconType = environment.markers.icon_blue_url;
-                    if (
-                        currentTimeMseconds - markerTimeMseconds >
-                        environment.time.online_delay
-                    ) {
-                        markerIconType = environment.markers.icon_grey_url;
+                    let markerIconType = environment.markers.marker_available_icon;
+                    if ( currentTimeMseconds - markerTimeMseconds > environment.time.online_delay)
+                    {
+                        markerIconType = environment.markers.marker_unavailable_icon;
                     }
                     let m = this.getVizualMarkerById(entry.deviceId);
                     if (m != undefined) {
@@ -101,13 +99,11 @@ export class MapComponent {
     }
 
     getMarkerById(id) {
-        return this.httpMarkers.filter((entry) => entry.deviceId === id)[0];
+        return this.markers.filter((entry) => entry.deviceId === id)[0];
     }
 
     getVizualMarkerById(id) {
-        return this.vizualMarkers.filter(
-            (entry) => entry.options.title === id
-        )[0];
+        return this.vizualMarkers.filter((entry) => entry.options.title === id)[0];
     }
 
     private handleMarkerClick(id) {

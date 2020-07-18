@@ -1,28 +1,26 @@
-{
-    "locationList": [
-        {
-            "deviceId": "1",
-            "sensorType": "location",
-            "currentValue": [14.78, 15.32],
-            "timeStamp": "2020-07-17T10:19:00Z"
-        },
-        {
-            "deviceId": "2",
-            "sensorType": "location",
-            "currentValue": [6.66, 77.77],
-            "timeStamp": "2020-07-17T10:19:00Z"
-        },
-        {
-            "deviceId": "3",
-            "sensorType": "location",
-            "currentValue": [3.4, 54.4],
-            "timeStamp": "2020-07-17T12:07:00Z"
-        },
-        {
-            "deviceId": "4",
-            "sensorType": "location",
-            "currentValue": [56.4, 44.4],
-            "timeStamp": "2020-07-16T21:08:00Z"
-        }
-    ]
-}
+[
+    {
+        "deviceId": "1",
+        "sensorType": "location",
+        "currentValue": [14.78, 15.32],
+        "timeStamp": "2020-07-17T10:19:00Z"
+    },
+    {
+        "deviceId": "2",
+        "sensorType": "location",
+        "currentValue": [6.66, 77.77],
+        "timeStamp": "2020-07-17T10:19:00Z"
+    },
+    {
+        "deviceId": "3",
+        "sensorType": "location",
+        "currentValue": [3.4, 54.4],
+        "timeStamp": "2020-07-17T12:07:00Z"
+    },
+    {
+        "deviceId": "4",
+        "sensorType": "location",
+        "currentValue": [56.4, 44.4],
+        "timeStamp": "2020-07-16T21:08:00Z"
+    }
+]
