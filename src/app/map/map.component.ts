@@ -1,6 +1,7 @@
 import {
     Component,
     OnInit,
+    OnDestroy,
     ComponentFactoryResolver,
     ComponentRef,
     Injector,
@@ -21,10 +22,10 @@ import { switchMap } from "rxjs/operators";
     templateUrl: "./map.component.html",
     styleUrls: ["./map.component.css"],
 })
-export class MapComponent {
+export class MapComponent implements OnDestroy{
     map: Map;
     markers: any;
-    vizualMarkers: Marker[] = [];
+    vizualMarkers: { [key: string]: Marker } = {};
     subscription: Subscription;
     // Define our base layers so we can reference them multiple times
     streetMaps = tileLayer(environment.maps.street_title, {
@@ -58,10 +59,14 @@ export class MapComponent {
                 let currentTimeMseconds = Date.parse(currentTime);
                 for (const entry of this.markers) {
                     let markerTimeMseconds = Date.parse(entry.timeStamp);
-                    let markerIconType = environment.markers.marker_available_icon;
-                    if ( currentTimeMseconds - markerTimeMseconds > environment.time.online_delay)
-                    {
-                        markerIconType = environment.markers.marker_unavailable_icon;
+                    let markerIconType =
+                        environment.markers.marker_available_icon;
+                    if (
+                        currentTimeMseconds - markerTimeMseconds >
+                        environment.time.online_delay
+                    ) {
+                        markerIconType =
+                            environment.markers.marker_unavailable_icon;
                     }
                     let m = this.getVizualMarkerById(entry.deviceId);
                     if (m != undefined) {
@@ -92,7 +97,7 @@ export class MapComponent {
                         });
 
                         m.addTo(this.map);
-                        this.vizualMarkers.push(m);
+                        this.vizualMarkers[entry.deviceId] = m;
                     }
                 }
             });
@@ -103,7 +108,7 @@ export class MapComponent {
     }
 
     getVizualMarkerById(id) {
-        return this.vizualMarkers.filter((entry) => entry.options.title === id)[0];
+        return this.vizualMarkers[id];
     }
 
     private handleMarkerClick(id) {
@@ -128,4 +133,8 @@ export class MapComponent {
         zoom: 3,
         center: latLng([20.0, 50.0]),
     };
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
 }
