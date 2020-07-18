@@ -22,7 +22,7 @@ import { switchMap } from "rxjs/operators";
     templateUrl: "./map.component.html",
     styleUrls: ["./map.component.css"],
 })
-export class MapComponent implements OnDestroy{
+export class MapComponent implements OnDestroy {
     map: Map;
     markers: any;
     vizualMarkers: { [key: string]: Marker } = {};
@@ -36,6 +36,21 @@ export class MapComponent implements OnDestroy{
         detectRetina: true,
         attribution: environment.maps.attribute,
     });
+
+    // Layers control object with our two base layers
+    layersControl = {
+        baseLayers: {
+            "Street Maps": this.streetMaps,
+            "Wikimedia Maps": this.wMaps,
+        },
+    };
+
+    // Set the initial set of displayed layers
+    options = {
+        layers: [this.streetMaps],
+        zoom: 3,
+        center: latLng([20.0, 50.0]),
+    };
 
     constructor(
         private dataService: MarkersService,
@@ -118,21 +133,6 @@ export class MapComponent implements OnDestroy{
             width: "auto",
         });
     }
-
-    // Layers control object with our two base layers
-    layersControl = {
-        baseLayers: {
-            "Street Maps": this.streetMaps,
-            "Wikimedia Maps": this.wMaps,
-        },
-    };
-
-    // Set the initial set of displayed layers
-    options = {
-        layers: [this.streetMaps],
-        zoom: 3,
-        center: latLng([20.0, 50.0]),
-    };
 
     ngOnDestroy() {
         this.subscription.unsubscribe();

@@ -15,4 +15,7 @@ export const environment = {
         online_delay: 60000, //msec
         update_time: 6000, //msec
     },
+    http: {
+        base_url: "https://lg.perf.group/",
+    },
 };
