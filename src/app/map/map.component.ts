@@ -84,7 +84,7 @@ export class MapComponent implements OnDestroy {
                             environment.markers.marker_unavailable_icon;
                     }
                     let m = this.getVizualMarkerById(entry.deviceId);
-                    if (m != undefined) {
+                    if (m) {
                         m.setIcon(
                             icon({
                                 iconSize: [25, 41],
@@ -135,6 +135,6 @@ export class MapComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        if (this.map) this.subscription.unsubscribe();
     }
 }
