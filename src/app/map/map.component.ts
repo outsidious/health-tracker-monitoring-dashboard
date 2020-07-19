@@ -1,6 +1,7 @@
 import {
     Component,
     OnInit,
+    OnDestroy,
     ComponentFactoryResolver,
     ComponentRef,
     Injector,
@@ -13,22 +14,19 @@ import { MatDialog } from "@angular/material/dialog";
 import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { Identifiers } from "@angular/compiler";
-
-interface MarkerMetaData {
-    name: String;
-    markerInstance: Marker;
-    componentInstance: ComponentRef<MarkerComponent>;
-}
+import { Subscription, timer } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 @Component({
     selector: "app-map",
     templateUrl: "./map.component.html",
     styleUrls: ["./map.component.css"],
 })
-export class MapComponent {
+export class MapComponent implements OnDestroy {
     map: Map;
-    markers: MarkerMetaData[] = [];
+    markers: any;
+    vizualMarkers: { [key: string]: Marker } = {};
+    subscription: Subscription;
     // Define our base layers so we can reference them multiple times
     streetMaps = tileLayer(environment.maps.street_title, {
         detectRetina: true,
@@ -38,78 +36,6 @@ export class MapComponent {
         detectRetina: true,
         attribution: environment.maps.attribute,
     });
-
-    constructor(
-        private dataService: MarkersService,
-        private resolver: ComponentFactoryResolver,
-        private injector: Injector,
-        private dialog: MatDialog,
-        private zone: NgZone
-    ) {}
-
-    onMapReady(map) {
-        // get a local reference to the map as we need it later
-        this.map = map;
-        this.addMarkers();
-    }
-
-    addMarkers() {
-        // simply iterate over the array of markers from our data service
-        // and add them to the map
-        this.dataService.getMarkers().subscribe((data) => {
-            for (const entry of data) {
-                // dynamically instantiate a HTMLMarkerComponent
-                const factory = this.resolver.resolveComponentFactory(
-                    MarkerComponent
-                );
-
-                // we need to pass in the dependency injector
-                const component = factory.create(this.injector);
-
-                // wire up the @Input() or plain variables (doesn't have to be strictly an @Input())
-                component.instance.data = entry;
-
-                // we need to manually trigger change detection on our in-memory component
-                // s.t. its template syncs with the data we passed in
-                component.changeDetectorRef.detectChanges();
-
-                // create a new Leaflet marker at the given position
-                let m = marker(entry.position, {
-                    icon: icon({
-                        iconSize: [25, 41],
-                        iconAnchor: [13, 41],
-                        iconUrl: environment.markers.icon_url,
-                        shadowUrl: environment.markers.shadow_url,
-                    }),
-                });
-
-                m.on("click", () => {
-                    this.zone.run(() => {
-                        this.handleMarkerClick(entry.id);
-                    });
-                });
-
-                // finally add the marker to the map s.t. it is visible
-                m.addTo(this.map);
-
-                // add a metadata object into a local array which helps us
-                // keep track of the instantiated markers for removing/disposing them later
-                this.markers.push({
-                    name: entry.name,
-                    markerInstance: m,
-                    componentInstance: component,
-                });
-            }
-        });
-    }
-
-    private handleMarkerClick(MarkerId) {
-        let m = this.dataService.getMarkerById(MarkerId);
-        const dialogRef = this.dialog.open(DialogComponent, {
-            data: { marker_id: m.id, some_data: m.description },
-            width: "auto",
-        });
-    }
 
     // Layers control object with our two base layers
     layersControl = {
@@ -122,7 +48,93 @@ export class MapComponent {
     // Set the initial set of displayed layers
     options = {
         layers: [this.streetMaps],
-        zoom: 8,
-        center: latLng([46.879966, -121.726909]),
+        zoom: 3,
+        center: latLng([20.0, 50.0]),
     };
+
+    constructor(
+        private dataService: MarkersService,
+        private resolver: ComponentFactoryResolver,
+        private injector: Injector,
+        private dialog: MatDialog,
+        private zone: NgZone
+    ) {}
+
+    onMapReady(map) {
+        this.map = map;
+        this.updateMarkers();
+    }
+
+    updateMarkers() {
+        this.subscription = timer(0, environment.time.update_time)
+            .pipe(switchMap(() => this.dataService.getMarkers()))
+            .subscribe((data) => {
+                this.markers = data;
+                let currentTime = new Date().toISOString();
+                let currentTimeMseconds = Date.parse(currentTime);
+                for (const entry of this.markers) {
+                    let markerTimeMseconds = Date.parse(entry.timeStamp);
+                    let markerIconType =
+                        environment.markers.marker_available_icon;
+                    if (
+                        currentTimeMseconds - markerTimeMseconds >
+                        environment.time.online_delay
+                    ) {
+                        markerIconType =
+                            environment.markers.marker_unavailable_icon;
+                    }
+                    let m = this.getVizualMarkerById(entry.deviceId);
+                    if (m) {
+                        m.setIcon(
+                            icon({
+                                iconSize: [25, 41],
+                                iconAnchor: [13, 41],
+                                iconUrl: markerIconType,
+                                shadowUrl: environment.markers.shadow_url,
+                            })
+                        );
+                        m.setLatLng(entry.currentValue);
+                    } else {
+                        m = marker(entry.currentValue, {
+                            icon: icon({
+                                iconSize: [25, 41],
+                                iconAnchor: [13, 41],
+                                iconUrl: markerIconType,
+                                shadowUrl: environment.markers.shadow_url,
+                            }),
+                            title: entry.deviceId,
+                        });
+
+                        m.on("click", () => {
+                            this.zone.run(() => {
+                                this.handleMarkerClick(entry.deviceId);
+                            });
+                        });
+
+                        m.addTo(this.map);
+                        this.vizualMarkers[entry.deviceId] = m;
+                    }
+                }
+            });
+    }
+
+    getMarkerById(id) {
+        return this.markers.filter((entry) => entry.deviceId === id)[0];
+    }
+
+    getVizualMarkerById(id) {
+        return this.vizualMarkers[id];
+    }
+
+    private handleMarkerClick(id) {
+        let m = this.getMarkerById(id);
+        const dialogRef = this.dialog.open(DialogComponent, {
+            data: { markerId: m.deviceId, someData: m.timeStamp },
+            width: "auto",
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) this.subscription.unsubscribe();
+    }
 }

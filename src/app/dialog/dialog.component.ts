@@ -3,8 +3,8 @@ import { MatDialogRef } from "@angular/material/dialog";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 export interface DialogData {
-    marker_id: string;
-    some_data: string;
+    markerId: string;
+    someData: string;
 }
 
 @Component({
