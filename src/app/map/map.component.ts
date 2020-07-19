@@ -135,6 +135,6 @@ export class MapComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.map) this.subscription.unsubscribe();
+        if (this.subscription) this.subscription.unsubscribe();
     }
 }
