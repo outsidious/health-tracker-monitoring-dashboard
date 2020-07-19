@@ -3,10 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 
 @Injectable({providedIn: 'root'})
-export class MarkersService {
+export class SensorsService {
     constructor(private http: HttpClient) {}
 
-    getMarkers() {
-        return this.http.get(environment.http.base_url + "sensors/current/location");
+    getSensorsValues(id) {
+        return this.http.get(environment.http.base_url + "sensors/current/all/" + id);
     }
 }

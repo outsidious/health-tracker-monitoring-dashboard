@@ -14,8 +14,11 @@ import { MatDialog } from "@angular/material/dialog";
 import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
+import { SensorComponent } from "../sensor/sensor.component";
+import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
+import { enableDebugTools } from '@angular/platform-browser';
 
 @Component({
     selector: "app-map",
@@ -25,6 +28,7 @@ import { switchMap } from "rxjs/operators";
 export class MapComponent implements OnDestroy {
     map: Map;
     markers: any;
+    sensorValues: any;
     vizualMarkers: { [key: string]: Marker } = {};
     subscription: Subscription;
     // Define our base layers so we can reference them multiple times
@@ -53,7 +57,8 @@ export class MapComponent implements OnDestroy {
     };
 
     constructor(
-        private dataService: MarkersService,
+        private markerService: MarkersService,
+        private sensorsService: SensorsService,
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
         private dialog: MatDialog,
@@ -67,7 +72,7 @@ export class MapComponent implements OnDestroy {
 
     updateMarkers() {
         this.subscription = timer(0, environment.time.update_time)
-            .pipe(switchMap(() => this.dataService.getMarkers()))
+            .pipe(switchMap(() => this.markerService.getMarkers()))
             .subscribe((data) => {
                 this.markers = data;
                 let currentTime = new Date().toISOString();
@@ -127,10 +132,19 @@ export class MapComponent implements OnDestroy {
     }
 
     private handleMarkerClick(id) {
-        let m = this.getMarkerById(id);
-        const dialogRef = this.dialog.open(DialogComponent, {
-            data: { markerId: m.deviceId, someData: m.timeStamp },
-            width: "auto",
+        this.sensorsService.getSensorsValues(id).subscribe((data) => {
+            this.sensorValues = data;
+            let structSensorValues: { [key: string]: any } = {};
+            for (const sensorVal of this.sensorValues) {
+                structSensorValues[sensorVal.sensorType] = sensorVal.currentValue;
+            }
+            for(let key in structSensorValues) {
+                console.log(key + " = " + structSensorValues[key]);
+            }
+            const dialogRef = this.dialog.open(DialogComponent, {
+                data: { markerId: id, someData: structSensorValues },
+                width: "auto",
+            });
         });
     }
 

@@ -2,7 +2,7 @@
     Id: <i>{{ data.markerId }}</i>
 </h1>
 <h1 mat-dialog-title>
-    <i>{{ data.someData }}</i>
+    <td *ngFor='let p of data.someData'>{{ data.someData[p] }}</td>
 </h1>
 <p>
     <button mat-raised-button (click)="close()">Close</button>

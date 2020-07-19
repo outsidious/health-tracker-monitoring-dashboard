@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 export interface DialogData {
     markerId: string;
-    someData: string;
+    someData: { [key: string]: any };
 }
 
 @Component({
