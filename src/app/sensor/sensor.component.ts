@@ -11,3 +11,9 @@ export class SensorComponent {
     timeStamp: string;
     alertState: boolean;
 }
+
+export class SensorVal {
+    currentValue: any;
+    alertState: boolean;
+}
+

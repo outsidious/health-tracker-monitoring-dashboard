@@ -9,9 +9,9 @@
                 align="left"
                 [ngStyle]="{
                     color:
-                        data.sensorAlertStates[key] === true ? 'red' : 'green'
+                        data.sensorValues[key].alertState === true ? 'red' : 'green'
                 }">
-                {{ data.sensorValues[key] }}
+                {{ data.sensorValues[key].currentValue }}
             </td>
         </tr>
     </thead>

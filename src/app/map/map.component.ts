@@ -15,6 +15,7 @@ import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
 import { SensorComponent } from "../sensor/sensor.component";
+import { SensorVal } from "../sensor/sensor.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
@@ -135,20 +136,18 @@ export class MapComponent implements OnDestroy {
         this.sensorsService.getSensorsValues(id).subscribe((data) => {
             this.sensors = data;
             let sensorsNames: string[] = [];
-            let sensorsValues: { [key: string]: string } = {};
-            let sensorsAlertState: { [key: string]: boolean } = {};
+            let sensorsValues: { [key: string]: SensorVal } = {};
+            //let sensorsAlertState: { [key: string]: boolean } = {};
             for (const sensor of this.sensors) {
                 sensorsNames.push(sensor.sensorType);
-                sensorsValues[sensor.sensorType] = sensor.currentValue;
-                sensorsAlertState[sensor.sensorType] = sensor.alertState;
+                sensorsValues[sensor.sensorType] = {currentValue: sensor.currentValue, alertState: sensor.alertState};
             }
-            console.log(sensorsAlertState);
             const dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     markerId: id,
                     sensorNames: sensorsNames,
                     sensorValues: sensorsValues,
-                    sensorAlertStates: sensorsAlertState,
+                    //sensorAlertStates: sensorsAlertState,
                 },
                 width: "auto",
             });
