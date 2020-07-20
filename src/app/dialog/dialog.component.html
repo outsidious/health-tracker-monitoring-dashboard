@@ -5,7 +5,7 @@
     <thead>
         <tr *ngFor='let key of data.sensorNames'>
             <th align=left> {{ key }} </th>
-            <td align=left> {{ data.sensorValues[key] }} </td> 
+            <td align=left [ngStyle]="{'color':data.sensorAlertStates[key] === true ? 'red' : 'green' }"> {{ data.sensorValues[key] }} </td> 
         </tr>
     </thead>
 </table>

@@ -136,12 +136,13 @@ export class MapComponent implements OnDestroy {
             this.sensors = data;
             let sensorsNames: string[] = [];
             let sensorsValues: { [key: string]: string } = {};
-            let sensorsAlertState: boolean[] = [];
+            let sensorsAlertState: { [key: string]: boolean } = {};
             for (const sensor of this.sensors) {
                 sensorsNames.push(sensor.sensorType);
                 sensorsValues[sensor.sensorType] = sensor.currentValue;
-                sensorsAlertState.push(sensor.alertState);
+                sensorsAlertState[sensor.sensorType] = sensor.alertState;
             }
+            console.log(sensorsAlertState);
             const dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     markerId: id,
