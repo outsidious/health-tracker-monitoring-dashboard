@@ -18,7 +18,7 @@ import { SensorComponent } from "../sensor/sensor.component";
 import { SensorVal } from "../sensor/sensor.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { switchMap } from "rxjs/operators"; 
 import { enableDebugTools } from "@angular/platform-browser";
 
 @Component({
@@ -31,7 +31,8 @@ export class MapComponent implements OnDestroy {
     markers: any;
     sensors: any;
     vizualMarkers: { [key: string]: Marker } = {};
-    subscription: Subscription;
+    markersSubscription: Subscription;
+    sensorSubscription: Subscription;
     // Define our base layers so we can reference them multiple times
     streetMaps = tileLayer(environment.maps.street_title, {
         detectRetina: true,
@@ -69,10 +70,15 @@ export class MapComponent implements OnDestroy {
     onMapReady(map) {
         this.map = map;
         this.updateMarkers();
+        //this.updateSensors();
     }
 
+    /*updateSensors() {
+        this.sensorSubscription = this.sensorsService.sensorsSubject.subscribe((data) => {});
+    }*/
+
     updateMarkers() {
-        this.subscription = timer(0, environment.time.update_time)
+        this.markersSubscription = timer(0, environment.time.update_time)
             .pipe(switchMap(() => this.markerService.getMarkers()))
             .subscribe((data) => {
                 this.markers = data;
@@ -133,28 +139,17 @@ export class MapComponent implements OnDestroy {
     }
 
     private handleMarkerClick(id) {
-        this.sensorsService.getSensorsValues(id).subscribe((data) => {
-            this.sensors = data;
-            let sensorsNames: string[] = [];
-            let sensorsValues: { [key: string]: SensorVal } = {};
-            //let sensorsAlertState: { [key: string]: boolean } = {};
-            for (const sensor of this.sensors) {
-                sensorsNames.push(sensor.sensorType);
-                sensorsValues[sensor.sensorType] = {currentValue: sensor.currentValue, alertState: sensor.alertState};
-            }
-            const dialogRef = this.dialog.open(DialogComponent, {
-                data: {
-                    markerId: id,
-                    sensorNames: sensorsNames,
-                    sensorValues: sensorsValues,
-                    //sensorAlertStates: sensorsAlertState,
-                },
-                width: "auto",
-            });
+        this.sensorsService.updateSensorsValues(id);
+        const dialogRef = this.dialog.open(DialogComponent, {
+            data: {
+                markerId: id,
+                sensorValues: [],
+            },
+            width: "auto",
         });
     }
 
     ngOnDestroy() {
-        if (this.subscription) this.subscription.unsubscribe();
+        if (this.markersSubscription) this.markersSubscription.unsubscribe();
     }
 }

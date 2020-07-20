@@ -3,15 +3,15 @@
 </h1>
 <table cellpadding="5">
     <thead>
-        <tr *ngFor="let key of data.sensorNames">
-            <th align="left">{{ key }}</th>
+        <tr *ngFor="let elem of data.sensorsValues">
+            <th align="left">{{ elem.key }}</th>
             <td
                 align="left"
                 [ngStyle]="{
                     color:
-                        data.sensorValues[key].alertState === true ? 'red' : 'green'
+                        elem.val.alertState === true ? 'red' : 'green'
                 }">
-                {{ data.sensorValues[key].currentValue }}
+                {{ elem.val.currentValue }}
             </td>
         </tr>
     </thead>
