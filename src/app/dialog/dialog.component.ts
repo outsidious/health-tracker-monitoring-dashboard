@@ -4,7 +4,9 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 export interface DialogData {
     markerId: string;
-    someData: { [key: string]: any };
+    sensorNames: string[];
+    sensorValues: { [key: string]: string };
+    sensorAlertStates: boolean;
 }
 
 @Component({

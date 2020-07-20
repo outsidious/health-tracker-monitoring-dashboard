@@ -1,9 +1,14 @@
 <h1 mat-dialog-title>
     Id: <i>{{ data.markerId }}</i>
 </h1>
-<h1 mat-dialog-title>
-    <td *ngFor='let p of data.someData'>{{ data.someData[p] }}</td>
-</h1>
+<table align=left>
+    <thead>
+        <tr *ngFor='let key of data.sensorNames'>
+            <th align=left> {{ key }} </th>
+            <td align=left> {{ data.sensorValues[key] }} </td> 
+        </tr>
+    </thead>
+</table>
 <p>
     <button mat-raised-button (click)="close()">Close</button>
 </p>

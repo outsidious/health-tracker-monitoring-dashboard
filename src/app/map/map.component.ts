@@ -18,7 +18,7 @@ import { SensorComponent } from "../sensor/sensor.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
-import { enableDebugTools } from '@angular/platform-browser';
+import { enableDebugTools } from "@angular/platform-browser";
 
 @Component({
     selector: "app-map",
@@ -28,7 +28,7 @@ import { enableDebugTools } from '@angular/platform-browser';
 export class MapComponent implements OnDestroy {
     map: Map;
     markers: any;
-    sensorValues: any;
+    sensors: any;
     vizualMarkers: { [key: string]: Marker } = {};
     subscription: Subscription;
     // Define our base layers so we can reference them multiple times
@@ -133,16 +133,22 @@ export class MapComponent implements OnDestroy {
 
     private handleMarkerClick(id) {
         this.sensorsService.getSensorsValues(id).subscribe((data) => {
-            this.sensorValues = data;
-            let structSensorValues: { [key: string]: any } = {};
-            for (const sensorVal of this.sensorValues) {
-                structSensorValues[sensorVal.sensorType] = sensorVal.currentValue;
-            }
-            for(let key in structSensorValues) {
-                console.log(key + " = " + structSensorValues[key]);
+            this.sensors = data;
+            let sensorsNames: string[] = [];
+            let sensorsValues: { [key: string]: string } = {};
+            let sensorsAlertState: boolean[] = [];
+            for (const sensor of this.sensors) {
+                sensorsNames.push(sensor.sensorType);
+                sensorsValues[sensor.sensorType] = sensor.currentValue;
+                sensorsAlertState.push(sensor.alertState);
             }
             const dialogRef = this.dialog.open(DialogComponent, {
-                data: { markerId: id, someData: structSensorValues },
+                data: {
+                    markerId: id,
+                    sensorNames: sensorsNames,
+                    sensorValues: sensorsValues,
+                    sensorAlertStates: sensorsAlertState,
+                },
                 width: "auto",
             });
         });
