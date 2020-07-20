@@ -1,0 +1,12 @@
+table {
+    border: 2px double #000;
+}
+
+td, th {
+    border: 1px double #000;
+    font-size: 20px;
+}
+
+h1 {
+    font-size: 30px;
+}
