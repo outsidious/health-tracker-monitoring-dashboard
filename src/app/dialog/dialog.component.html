@@ -3,13 +3,20 @@
 </h1>
 <table cellpadding="5">
     <thead>
-        <tr *ngFor='let key of data.sensorNames'>
-            <th align=left> {{ key }} </th>
-            <td align=left [ngStyle]="{'color':data.sensorAlertStates[key] === true ? 'red' : 'green' }"> {{ data.sensorValues[key] }} </td> 
+        <tr *ngFor="let key of data.sensorNames">
+            <th align="left">{{ key }}</th>
+            <td
+                align="left"
+                [ngStyle]="{
+                    color:
+                        data.sensorAlertStates[key] === true ? 'red' : 'green'
+                }">
+                {{ data.sensorValues[key] }}
+            </td>
         </tr>
     </thead>
 </table>
-<br>
+<br />
 <p>
     <button mat-raised-button (click)="close()">Close</button>
 </p>
