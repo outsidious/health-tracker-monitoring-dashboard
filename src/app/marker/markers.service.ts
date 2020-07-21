@@ -9,6 +9,7 @@ import { of } from "rxjs";
 @Injectable({ providedIn: "root" })
 export class MarkersService {
     markersSubject = new BehaviorSubject<MarkerModel[]>([]);
+    alertsSubject = new BehaviorSubject<string[]>([]);
 
     constructor(private http: HttpClient) {}
 
@@ -19,6 +20,17 @@ export class MarkersService {
                 map((markers: MarkerModel[]) => {
                     this.markersSubject.next(markers);
                     return of(markers);
+                })
+            );
+    }
+
+    updateAlerts() {
+        return this.http
+            .get(environment.http.base_url + "sensors/alerts/all")
+            .pipe(
+                map((markersId: string[]) => {
+                    this.alertsSubject.next(markersId);
+                    return of(markersId);
                 })
             );
     }
