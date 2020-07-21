@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { BehaviorSubject } from "rxjs";
-import { SensorModel } from "../sensor/sensor.component";
+import { SensorModel } from "./sensor.model";
 import { map } from "rxjs/operators";
 import { of } from "rxjs";
 

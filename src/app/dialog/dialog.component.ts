@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { SensorVal, SensorModel } from "../sensor/sensor.component";
+import { SensorVal, SensorModel } from "../sensor/sensor.model";
 import { Subscription, timer } from "rxjs";
 import { SensorsService } from "../sensor/sensors.service";
 

@@ -14,8 +14,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { SensorModel } from "../sensor/sensor.component";
-import { SensorVal } from "../sensor/sensor.component";
+import { SensorModel } from "../sensor/sensor.model";
+import { SensorVal } from "../sensor/sensor.model";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
@@ -28,7 +28,6 @@ import { enableDebugTools } from "@angular/platform-browser";
 })
 export class MapComponent implements OnDestroy {
     map: Map;
-    markers: any;
     vizualMarkers: { [key: string]: Marker } = {};
     markersSubscription: Subscription;
     // Define our base layers so we can reference them multiple times
@@ -67,64 +66,59 @@ export class MapComponent implements OnDestroy {
 
     onMapReady(map) {
         this.map = map;
-        this.updateMarkers();
+        this.getMarkers();
     }
 
-    updateMarkers() {
-        this.markersSubscription = timer(0, environment.time.update_time)
-            .pipe(switchMap(() => this.markerService.getMarkers()))
-            .subscribe((data) => {
-                this.markers = data;
-                let currentTime = new Date().toISOString();
-                let currentTimeMseconds = Date.parse(currentTime);
-                for (const entry of this.markers) {
-                    let markerTimeMseconds = Date.parse(entry.timeStamp);
-                    let markerIconType =
-                        environment.markers.marker_available_icon;
-                    if (
-                        currentTimeMseconds - markerTimeMseconds >
-                        environment.time.online_delay
-                    ) {
-                        markerIconType =
-                            environment.markers.marker_unavailable_icon;
-                    }
-                    let m = this.getVizualMarkerById(entry.deviceId);
-                    if (m) {
-                        m.setIcon(
-                            icon({
-                                iconSize: [25, 41],
-                                iconAnchor: [13, 41],
-                                iconUrl: markerIconType,
-                                shadowUrl: environment.markers.shadow_url,
-                            })
-                        );
-                        m.setLatLng(entry.currentValue);
-                    } else {
-                        m = marker(entry.currentValue, {
-                            icon: icon({
-                                iconSize: [25, 41],
-                                iconAnchor: [13, 41],
-                                iconUrl: markerIconType,
-                                shadowUrl: environment.markers.shadow_url,
-                            }),
-                            title: entry.deviceId,
-                        });
-
-                        m.on("click", () => {
-                            this.zone.run(() => {
-                                this.handleMarkerClick(entry.deviceId);
-                            });
-                        });
-
-                        m.addTo(this.map);
-                        this.vizualMarkers[entry.deviceId] = m;
-                    }
+    getMarkers() {
+        this.markerService.markersSubject.subscribe((data) => {
+            let currentTime = new Date().toISOString();
+            let currentTimeMseconds = Date.parse(currentTime);
+            for (const entry of data) {
+                let markerTimeMseconds = Date.parse(entry.timeStamp);
+                let markerIconType = environment.markers.marker_available_icon;
+                if (
+                    currentTimeMseconds - markerTimeMseconds >
+                    environment.time.online_delay
+                ) {
+                    markerIconType =
+                        environment.markers.marker_unavailable_icon;
                 }
-            });
-    }
+                let m = this.getVizualMarkerById(entry.deviceId);
+                if (m) {
+                    m.setIcon(
+                        icon({
+                            iconSize: [25, 41],
+                            iconAnchor: [13, 41],
+                            iconUrl: markerIconType,
+                            shadowUrl: environment.markers.shadow_url,
+                        })
+                    );
+                    m.setLatLng(entry.currentValue);
+                } else {
+                    m = marker(entry.currentValue, {
+                        icon: icon({
+                            iconSize: [25, 41],
+                            iconAnchor: [13, 41],
+                            iconUrl: markerIconType,
+                            shadowUrl: environment.markers.shadow_url,
+                        }),
+                        title: entry.deviceId,
+                    });
 
-    getMarkerById(id) {
-        return this.markers.filter((entry) => entry.deviceId === id)[0];
+                    m.on("click", () => {
+                        this.zone.run(() => {
+                            this.handleMarkerClick(entry.deviceId);
+                        });
+                    });
+
+                    m.addTo(this.map);
+                    this.vizualMarkers[entry.deviceId] = m;
+                }
+            }
+        });
+        this.markersSubscription = timer(0, environment.time.update_time)
+            .pipe(switchMap(() => this.markerService.updateMarkers()))
+            .subscribe(() => {});
     }
 
     getVizualMarkerById(id) {
