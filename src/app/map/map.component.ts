@@ -8,7 +8,16 @@ import {
     DoCheck,
     NgZone,
 } from "@angular/core";
-import { icon, latLng, marker, tileLayer, Marker, LatLng, Map } from "leaflet";
+import {
+    icon,
+    latLng,
+    marker,
+    tileLayer,
+    Marker,
+    LatLng,
+    Map,
+    IconOptions,
+} from "leaflet";
 import { environment } from "../../environments/environment";
 import { MatDialog } from "@angular/material/dialog";
 import { MarkersService } from "../marker/markers.service";
@@ -71,6 +80,11 @@ export class MapComponent implements OnDestroy {
         this.getMarkers();
     }
 
+    checkOnline(currentTime, markerTime) {
+        let timeDif = currentTime - markerTime;
+        return timeDif > environment.time.online_delay;
+    }
+
     getMarkers() {
         this.markerService.markersSubject.subscribe((markers) => {
             this.alertService.alertsSubject.subscribe((alerts) => {
@@ -79,40 +93,28 @@ export class MapComponent implements OnDestroy {
                 } else {
                     this.alert.pause();
                 }
-                let currentTime = new Date().toISOString();
-                let currentTimeMseconds = Date.parse(currentTime);
+                let currentTime = Date.parse(new Date().toISOString());
                 for (const entry of markers) {
-                    let markerTimeMseconds = Date.parse(entry.timeStamp);
-                    let markerIconType =
-                        environment.markers.marker_available_icon;
+                    let markerTime = Date.parse(entry.timeStamp);
+                    let markerIcon = environment.markers.marker_on_icon;
                     if (alerts.find((i) => i === entry.deviceId)) {
-                        markerIconType = environment.markers.marker_alert_icon;
-                    } else if (
-                        currentTimeMseconds - markerTimeMseconds >
-                        environment.time.online_delay
-                    ) {
-                        markerIconType =
-                            environment.markers.marker_unavailable_icon;
+                        markerIcon = environment.markers.marker_alert_icon;
+                    } else if (this.checkOnline(currentTime, markerTime)) {
+                        markerIcon = environment.markers.marker_off_icon;
                     }
+                    let markerSetIcon: IconOptions = {
+                        iconSize: [25, 41],
+                        iconAnchor: [13, 41],
+                        iconUrl: markerIcon,
+                        shadowUrl: environment.markers.shadow_url,
+                    };
                     let m = this.getVizualMarkerById(entry.deviceId);
                     if (m) {
-                        m.setIcon(
-                            icon({
-                                iconSize: [25, 41],
-                                iconAnchor: [13, 41],
-                                iconUrl: markerIconType,
-                                shadowUrl: environment.markers.shadow_url,
-                            })
-                        );
+                        m.setIcon(icon(markerSetIcon));
                         m.setLatLng(entry.currentValue);
                     } else {
                         m = marker(entry.currentValue, {
-                            icon: icon({
-                                iconSize: [25, 41],
-                                iconAnchor: [13, 41],
-                                iconUrl: markerIconType,
-                                shadowUrl: environment.markers.shadow_url,
-                            }),
+                            icon: icon(markerSetIcon),
                             title: entry.deviceId,
                         });
 
