@@ -1,0 +1,17 @@
+table {
+    border: 2px double #000;
+    width: 100%;
+}
+
+td, th {
+    border: 1px double #000;
+    font-size: 20px;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+:host ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {   
+    stroke: rgb(146, 38, 156);
+}
