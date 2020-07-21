@@ -17,8 +17,8 @@ export const environment = {
         shadow_url: "assets/map/marker-shadow.png",
     },
     time: {
-        online_delay: 60000, //msec
-        update_time: 6000, //msec
+        online_delay: 20000, //msec
+        update_time: 4000, //msec
         alerts_update_time: 2000, //msec
     },
     http: {

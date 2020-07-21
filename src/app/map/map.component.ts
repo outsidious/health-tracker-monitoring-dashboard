@@ -65,8 +65,8 @@ export class MapComponent implements OnDestroy {
 
     onMapReady(map) {
         this.map = map;
-        this.alert = new Audio("../../assets/audio/alert.mp3");
-        this.alert.src = "../../assets/audio/alert.mp3"
+        this.alert = new Audio("/assets/audio/alert.mp3");
+        this.alert.src = "/assets/audio/alert.mp3";
         this.alert.load();
         this.getMarkers();
     }
@@ -74,22 +74,25 @@ export class MapComponent implements OnDestroy {
     getMarkers() {
         this.markerService.markersSubject.subscribe((markers) => {
             this.alertService.alertsSubject.subscribe((alerts) => {
-                if (alerts[0] != undefined) {
+                if (alerts.length !== 0) {
                     this.alert.play();
-                }
-                else {
+                } else {
                     this.alert.pause();
                 }
                 let currentTime = new Date().toISOString();
                 let currentTimeMseconds = Date.parse(currentTime);
                 for (const entry of markers) {
                     let markerTimeMseconds = Date.parse(entry.timeStamp);
-                    let markerIconType = environment.markers.marker_available_icon;
+                    let markerIconType =
+                        environment.markers.marker_available_icon;
                     if (alerts.find((i) => i === entry.deviceId)) {
                         markerIconType = environment.markers.marker_alert_icon;
-                    }
-                    else if (currentTimeMseconds - markerTimeMseconds > environment.time.online_delay) {
-                        markerIconType = environment.markers.marker_unavailable_icon;
+                    } else if (
+                        currentTimeMseconds - markerTimeMseconds >
+                        environment.time.online_delay
+                    ) {
+                        markerIconType =
+                            environment.markers.marker_unavailable_icon;
                     }
                     let m = this.getVizualMarkerById(entry.deviceId);
                     if (m) {
@@ -102,8 +105,7 @@ export class MapComponent implements OnDestroy {
                             })
                         );
                         m.setLatLng(entry.currentValue);
-                    } 
-                    else {
+                    } else {
                         m = marker(entry.currentValue, {
                             icon: icon({
                                 iconSize: [25, 41],
