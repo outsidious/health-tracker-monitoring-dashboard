@@ -26,6 +26,7 @@ import { DialogComponent } from "../dialog/dialog.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
+import { MarkerModel } from '../marker/marker.model';
 
 @Component({
     selector: "app-map",
@@ -80,11 +81,6 @@ export class MapComponent implements OnDestroy {
         this.getMarkers();
     }
 
-    checkOnline(currentTime, markerTime) {
-        let timeDif = currentTime - markerTime;
-        return timeDif > environment.time.online_delay;
-    }
-
     getMarkers() {
         this.markerService.markersSubject.subscribe((markers) => {
             this.alertService.alertsSubject.subscribe((alerts) => {
@@ -99,7 +95,7 @@ export class MapComponent implements OnDestroy {
                     let markerIcon = environment.markers.marker_on_icon;
                     if (alerts.find((i) => i === entry.deviceId)) {
                         markerIcon = environment.markers.marker_alert_icon;
-                    } else if (this.checkOnline(currentTime, markerTime)) {
+                    } else if (MarkerModel.isOnline(currentTime, markerTime)) {
                         markerIcon = environment.markers.marker_off_icon;
                     }
                     let markerSetIcon: IconOptions = {
