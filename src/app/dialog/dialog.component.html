@@ -1,21 +1,26 @@
 <h1 mat-dialog-title>
     Id: <i>{{ data.markerId }}</i>
 </h1>
-<table cellpadding="5">
-    <thead>
-        <tr *ngFor="let elem of data.sensorsValues">
-            <th align="left">{{ elem.key }}</th>
-            <td
-                align="left"
-                [ngStyle]="{
-                    color:
-                        elem.val.alertState === true ? 'red' : 'green'
-                }">
-                {{ elem.val.currentValue }}
-            </td>
-        </tr>
-    </thead>
-</table>
+<ng-container *ngIf="isLoaded">
+    <table cellpadding="5">
+        <thead>
+            <tr *ngFor="let elem of data.sensorsValues">
+                <th align="left">{{ elem.key }}</th>
+                <td
+                    align="left"
+                    [ngStyle]="{
+                        color: elem.val.alertState === true ? 'red' : 'green'
+                    }"
+                >
+                    {{ elem.val.currentValue }}
+                </td>
+            </tr>
+        </thead>
+    </table>
+</ng-container>
+<ng-container *ngIf="!isLoaded">
+    <mat-progress-spinner mode="indeterminate" style="margin:0 auto;" diameter="150"> </mat-progress-spinner>
+</ng-container>
 <br />
 <p>
     <button mat-raised-button (click)="close()">Close</button>

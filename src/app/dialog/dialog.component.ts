@@ -1,10 +1,9 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { SensorVal, SensorComponent } from "../sensor/sensor.component"
+import { SensorVal, SensorModel } from "../sensor/sensor.component"
 import { Subscription, timer } from "rxjs";
 import { SensorsService } from "../sensor/sensors.service";
-import { MarkerComponent } from '../marker/marker.component';
 
 export interface DialogData {
     markerId: string;
@@ -17,6 +16,7 @@ export interface DialogData {
     styleUrls: ["./dialog.component.css"],
 })
 export class DialogComponent {
+    isLoaded: boolean;
     sensorSubscription: Subscription;
 
     constructor(
@@ -31,14 +31,16 @@ export class DialogComponent {
             for (const sensor of data) {
                 this.data.sensorsValues.push({key: sensor.sensorType, val: {currentValue: sensor.currentValue, alertState: sensor.alertState}});
             }
+            this.isLoaded = false;
         });
+        this.sensorsService.updateSensorsValues(this.data.markerId).subscribe(() => { this.setIsLoadedTrue() });
     }
 
     public close() {
         this.dialogRef.close();
     }
 
-    hack(val) {
-        return Array.from(val);
+    setIsLoadedTrue() {
+        this.isLoaded = true;
     }
 }

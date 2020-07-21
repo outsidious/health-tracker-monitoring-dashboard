@@ -14,7 +14,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { SensorComponent } from "../sensor/sensor.component";
+import { SensorModel } from "../sensor/sensor.component";
 import { SensorVal } from "../sensor/sensor.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
@@ -29,10 +29,8 @@ import { enableDebugTools } from "@angular/platform-browser";
 export class MapComponent implements OnDestroy {
     map: Map;
     markers: any;
-    sensors: any;
     vizualMarkers: { [key: string]: Marker } = {};
     markersSubscription: Subscription;
-    sensorSubscription: Subscription;
     // Define our base layers so we can reference them multiple times
     streetMaps = tileLayer(environment.maps.street_title, {
         detectRetina: true,
@@ -70,12 +68,7 @@ export class MapComponent implements OnDestroy {
     onMapReady(map) {
         this.map = map;
         this.updateMarkers();
-        //this.updateSensors();
     }
-
-    /*updateSensors() {
-        this.sensorSubscription = this.sensorsService.sensorsSubject.subscribe((data) => {});
-    }*/
 
     updateMarkers() {
         this.markersSubscription = timer(0, environment.time.update_time)
@@ -139,7 +132,6 @@ export class MapComponent implements OnDestroy {
     }
 
     private handleMarkerClick(id) {
-        this.sensorsService.updateSensorsValues(id);
         const dialogRef = this.dialog.open(DialogComponent, {
             data: {
                 markerId: id,
