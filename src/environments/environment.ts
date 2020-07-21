@@ -19,7 +19,7 @@ export const environment = {
     time: {
         online_delay: 60000, //msec
         update_time: 6000, //msec
-        alerts_update_time: 6000, //msec
+        alerts_update_time: 2000, //msec
     },
     http: {
         base_url: "https://lg.perf.group/",

@@ -12,6 +12,7 @@ import { icon, latLng, marker, tileLayer, Marker, LatLng, Map } from "leaflet";
 import { environment } from "../../environments/environment";
 import { MatDialog } from "@angular/material/dialog";
 import { MarkersService } from "../marker/markers.service";
+import { AlertsService } from "../alert/alert.service";
 import { DialogComponent } from "../dialog/dialog.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
@@ -23,6 +24,7 @@ import { switchMap } from "rxjs/operators";
     styleUrls: ["./map.component.css"],
 })
 export class MapComponent implements OnDestroy {
+    alert: HTMLAudioElement;
     map: Map;
     vizualMarkers: { [key: string]: Marker } = {};
     markersSubscription: Subscription;
@@ -54,7 +56,7 @@ export class MapComponent implements OnDestroy {
 
     constructor(
         private markerService: MarkersService,
-        private sensorsService: SensorsService,
+        private alertService: AlertsService,
         private resolver: ComponentFactoryResolver,
         private injector: Injector,
         private dialog: MatDialog,
@@ -63,12 +65,21 @@ export class MapComponent implements OnDestroy {
 
     onMapReady(map) {
         this.map = map;
+        this.alert = new Audio("../../assets/audio/alert.mp3");
+        this.alert.src = "../../assets/audio/alert.mp3"
+        this.alert.load();
         this.getMarkers();
     }
 
     getMarkers() {
         this.markerService.markersSubject.subscribe((markers) => {
-            this.markerService.alertsSubject.subscribe((alerts) => {
+            this.alertService.alertsSubject.subscribe((alerts) => {
+                if (alerts[0] != undefined) {
+                    this.alert.play();
+                }
+                else {
+                    this.alert.pause();
+                }
                 let currentTime = new Date().toISOString();
                 let currentTimeMseconds = Date.parse(currentTime);
                 for (const entry of markers) {
@@ -119,7 +130,7 @@ export class MapComponent implements OnDestroy {
             .pipe(switchMap(() => this.markerService.updateMarkers()))
             .subscribe(() => {});
         this.alertsSubscription = timer(0, environment.time.alerts_update_time)
-            .pipe(switchMap(() => this.markerService.updateAlerts()))
+            .pipe(switchMap(() => this.alertService.updateAlerts()))
             .subscribe(() => {});
     }
 
