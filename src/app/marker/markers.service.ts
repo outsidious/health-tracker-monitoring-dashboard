@@ -2,13 +2,13 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { BehaviorSubject } from "rxjs";
-import { MarkerComponent } from "../marker/marker.component";
+import { MarkerModel } from "./marker.model";
 import { map } from "rxjs/operators";
 import { of } from "rxjs";
 
 @Injectable({ providedIn: "root" })
 export class MarkersService {
-    markersSubject = new BehaviorSubject<MarkerComponent[]>([]);
+    markersSubject = new BehaviorSubject<MarkerModel[]>([]);
 
     constructor(private http: HttpClient) {}
 
@@ -16,7 +16,7 @@ export class MarkersService {
         return this.http
             .get(environment.http.base_url + "sensors/current/location")
             .pipe(
-                map((markers: MarkerComponent[]) => {
+                map((markers: MarkerModel[]) => {
                     this.markersSubject.next(markers);
                     return of(markers);
                 })

@@ -4,21 +4,16 @@ import { LeafletModule } from "@asymmetrik/ngx-leaflet";
 import { AppComponent } from "./app.component";
 import { MapComponent } from "./map/map.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MarkerComponent } from "./marker/marker.component";
+import { MarkerModel } from "./marker/marker.model";
 import { DialogComponent } from "./dialog/dialog.component";
 import { MarkersService } from "./marker/markers.service";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { HttpClientModule }   from '@angular/common/http';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        MapComponent,
-        MarkerComponent,
-        DialogComponent,
-    ],
+    declarations: [AppComponent, MapComponent, DialogComponent],
     imports: [
         BrowserModule,
         LeafletModule,
@@ -29,7 +24,7 @@ import { HttpClientModule }   from '@angular/common/http';
         HttpClientModule,
     ],
     providers: [MarkersService],
-    entryComponents: [MarkerComponent, DialogComponent],
+    entryComponents: [DialogComponent],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
