@@ -10,4 +10,3 @@ export class SensorVal {
     currentValue: any;
     alertState: boolean;
 }
-

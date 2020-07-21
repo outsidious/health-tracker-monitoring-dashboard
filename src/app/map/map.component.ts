@@ -18,7 +18,7 @@ import { SensorModel } from "../sensor/sensor.component";
 import { SensorVal } from "../sensor/sensor.component";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
-import { switchMap } from "rxjs/operators"; 
+import { switchMap } from "rxjs/operators";
 import { enableDebugTools } from "@angular/platform-browser";
 
 @Component({
