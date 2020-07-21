@@ -13,7 +13,11 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
-    declarations: [AppComponent, MapComponent, DialogComponent],
+    declarations: [
+        AppComponent, 
+        MapComponent, 
+        DialogComponent,
+    ],
     imports: [
         BrowserModule,
         LeafletModule,
