@@ -11,15 +11,11 @@ import {
 import { icon, latLng, marker, tileLayer, Marker, LatLng, Map } from "leaflet";
 import { environment } from "../../environments/environment";
 import { MatDialog } from "@angular/material/dialog";
-import { MarkerComponent } from "../marker/marker.component";
 import { MarkersService } from "../marker/markers.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { SensorModel } from "../sensor/sensor.model";
-import { SensorVal } from "../sensor/sensor.model";
 import { SensorsService } from "../sensor/sensors.service";
 import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
-import { enableDebugTools } from "@angular/platform-browser";
 
 @Component({
     selector: "app-map",
