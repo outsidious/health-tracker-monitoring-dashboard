@@ -97,7 +97,7 @@ export class MapComponent implements OnDestroy {
                 let markerIcon = environment.markers.marker_on_icon;
                 if (data.alerts.find((i) => i === entry.deviceId)) {
                     markerIcon = environment.markers.marker_alert_icon;
-                } else if (MarkerModel.isOnline(currentTime, markerTime)) {
+                } else if (entry.isOnline(currentTime, markerTime)) {
                     markerIcon = environment.markers.marker_off_icon;
                 }
                 let markerSetIcon: IconOptions = {
