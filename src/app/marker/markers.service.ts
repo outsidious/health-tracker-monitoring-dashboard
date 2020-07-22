@@ -9,7 +9,6 @@ import { of } from "rxjs";
 @Injectable({ providedIn: "root" })
 export class MarkersService {
     markersSubject = new BehaviorSubject<MarkerModel[]>([]);
-    alertsSubject = new BehaviorSubject<string[]>([]);
 
     constructor(private http: HttpClient) {}
 
