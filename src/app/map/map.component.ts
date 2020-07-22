@@ -106,7 +106,7 @@ export class MapComponent implements OnDestroy {
                     iconUrl: markerIcon,
                     shadowUrl: environment.markers.shadow_url,
                 };
-                let m = this.getVizualMarkerById(entry.deviceId);
+                let m = this.vizualMarkers[entry.deviceId];
                 if (m) {
                     m.setIcon(icon(markerSetIcon));
                     m.setLatLng(entry.currentValue);
@@ -134,10 +134,6 @@ export class MapComponent implements OnDestroy {
         this.alertsSubscription = timer(0, environment.time.alerts_update_time)
             .pipe(switchMap(() => this.alertService.updateAlerts()))
             .subscribe(() => {});
-    }
-
-    getVizualMarkerById(id) {
-        return this.vizualMarkers[id];
     }
 
     private handleMarkerClick(id) {

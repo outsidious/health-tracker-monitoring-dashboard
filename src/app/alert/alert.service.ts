@@ -7,7 +7,7 @@ import { of } from "rxjs";
 
 @Injectable({ providedIn: "root" })
 export class AlertsService {
-    alertsSubject = new BehaviorSubject<Array<string>>([]);
+    alertsSubject = new BehaviorSubject<string[]>([]);
 
     constructor(private http: HttpClient) {}
 
