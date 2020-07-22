@@ -23,12 +23,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { MarkersService } from "../marker/markers.service";
 import { AlertsService } from "../alert/alert.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { SensorsService } from "../sensor/sensors.service";
-import { Subscription, timer, Observable, BehaviorSubject } from "rxjs";
+import { Subscription, timer } from "rxjs";
 import { switchMap } from "rxjs/operators";
 import { MarkerModel } from "../marker/marker.model";
 import { forkJoin } from "rxjs";
-import { tap } from "rxjs/operators";
 
 @Component({
     selector: "app-map",
@@ -41,10 +39,7 @@ export class MapComponent implements OnDestroy {
     vizualMarkers: { [key: string]: Marker } = {};
     markersSubscription: Subscription;
     alertsSubscription: Subscription;
-    markers: MarkerModel[];
-    alerts: string[];
-    _obs: [BehaviorSubject<string[]>, BehaviorSubject<MarkerModel[]>]
-    // Define our base layers so we can reference them multiple times
+
     streetMaps = tileLayer(environment.maps.street_title, {
         detectRetina: true,
         attribution: environment.maps.attribute,
@@ -54,7 +49,6 @@ export class MapComponent implements OnDestroy {
         attribution: environment.maps.attribute,
     });
 
-    // Layers control object with our two base layers
     layersControl = {
         baseLayers: {
             "Street Maps": this.streetMaps,
@@ -62,7 +56,6 @@ export class MapComponent implements OnDestroy {
         },
     };
 
-    // Set the initial set of displayed layers
     options = {
         layers: [this.streetMaps],
         zoom: 3,
@@ -72,8 +65,6 @@ export class MapComponent implements OnDestroy {
     constructor(
         private markerService: MarkersService,
         private alertService: AlertsService,
-        private resolver: ComponentFactoryResolver,
-        private injector: Injector,
         private dialog: MatDialog,
         private zone: NgZone
     ) {}
@@ -83,33 +74,28 @@ export class MapComponent implements OnDestroy {
         this.alert = new Audio("/assets/audio/alert.mp3");
         this.alert.src = "/assets/audio/alert.mp3";
         this.alert.load();
-        this._obs = [this.alertService.alertsSubject, this.markerService.markersSubject];
         this.getMarkers();
     }
 
     getHttp() {
         return forkJoin({
-            'alerts': this.alertService.updateAlerts(),
-            'markers': this.markerService.updateMarkers()
+            alerts: this.alertService.updateAlerts(),
+            markers: this.markerService.updateMarkers(),
         });
     }
 
     getMarkers() {
-        this.getHttp().subscribe(obs => {
-            this.alerts = obs.alerts;
-            this.markers = obs.markers;
-            console.log(this.markers);
-            console.log(this.alerts);
-            if (this.alerts.length !== 0) {
+        this.getHttp().subscribe((data) => {
+            if (data.alerts.length !== 0) {
                 this.alert.play();
             } else {
                 this.alert.pause();
             }
             let currentTime = Date.parse(new Date().toISOString());
-            for (const entry of this.markers) {
+            for (const entry of data.markers) {
                 let markerTime = Date.parse(entry.timeStamp);
                 let markerIcon = environment.markers.marker_on_icon;
-                if (this.alerts.find((i) => i === entry.deviceId)) {
+                if (data.alerts.find((i) => i === entry.deviceId)) {
                     markerIcon = environment.markers.marker_alert_icon;
                 } else if (MarkerModel.isOnline(currentTime, markerTime)) {
                     markerIcon = environment.markers.marker_off_icon;
@@ -141,13 +127,13 @@ export class MapComponent implements OnDestroy {
                 }
             }
         });
-        
+
         this.markersSubscription = timer(0, environment.time.update_time)
             .pipe(switchMap(() => this.markerService.updateMarkers()))
-            .subscribe(() => {console.log("markers update")});
+            .subscribe(() => {});
         this.alertsSubscription = timer(0, environment.time.alerts_update_time)
             .pipe(switchMap(() => this.alertService.updateAlerts()))
-            .subscribe(() => {console.log("alerts update")});
+            .subscribe(() => {});
     }
 
     getVizualMarkerById(id) {
