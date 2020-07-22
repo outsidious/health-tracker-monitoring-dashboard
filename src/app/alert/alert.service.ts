@@ -17,7 +17,7 @@ export class AlertsService {
             .pipe(
                 map((markersId: string[]) => {
                     this.alertsSubject.next(markersId);
-                    return of(markersId);
+                    return markersId;
                 })
             );
     }

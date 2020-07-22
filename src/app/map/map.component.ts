@@ -88,15 +88,16 @@ export class MapComponent implements OnDestroy {
     }
 
     getHttp() {
-        let obs: [BehaviorSubject<string[]>, BehaviorSubject<MarkerModel[]>] = [this.alertService.alertsSubject, this.markerService.markersSubject];
-        console.log("both update")
-        return forkJoin(obs);
+        return forkJoin({
+            'alerts': this.alertService.updateAlerts(),
+            'markers': this.markerService.updateMarkers()
+        });
     }
 
     getMarkers() {
         this.getHttp().subscribe(obs => {
-            this.alerts = obs[0];
-            this.markers = obs[1];
+            this.alerts = obs.alerts;
+            this.markers = obs.markers;
             console.log(this.markers);
             console.log(this.alerts);
             if (this.alerts.length !== 0) {

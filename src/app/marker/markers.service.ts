@@ -18,7 +18,7 @@ export class MarkersService {
             .pipe(
                 map((markers: MarkerModel[]) => {
                     this.markersSubject.next(markers);
-                    return of(markers);
+                    return markers;
                 })
             );
     }
