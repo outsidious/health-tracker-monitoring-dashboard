@@ -8,7 +8,7 @@ export class MarkerModel {
     timeStamp: string;
 }
 
-export class Marker {
+export class MarkerObj {
     deviceId: string;
     currentValue: LatLngExpression;
     timeStamp: string;
