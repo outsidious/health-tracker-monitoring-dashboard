@@ -14,7 +14,6 @@ import {
     marker,
     tileLayer,
     Marker,
-    LatLng,
     Map,
     IconOptions,
 } from "leaflet";
@@ -23,10 +22,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { MarkersService } from "../marker/markers.service";
 import { AlertsService } from "../alert/alert.service";
 import { DialogComponent } from "../dialog/dialog.component";
-import { Subscription, timer } from "rxjs";
+import { Subscription, timer, combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
+import { MarkerObj } from "../marker/marker.model";
 import { MarkerModel } from "../marker/marker.model";
-import { forkJoin } from "rxjs";
 
 @Component({
     selector: "app-map",
@@ -37,6 +36,7 @@ export class MapComponent implements OnDestroy {
     alert: HTMLAudioElement;
     map: Map;
     vizualMarkers: { [key: string]: Marker } = {};
+    markers: MarkerModel[];
     markersSubscription: Subscription;
     alertsSubscription: Subscription;
 
@@ -74,30 +74,35 @@ export class MapComponent implements OnDestroy {
         this.alert = new Audio("/assets/audio/alert.mp3");
         this.alert.src = "/assets/audio/alert.mp3";
         this.alert.load();
-        this.getMarkers();
+        this.markers = [];
+        this.UpdateMarkers();
     }
 
-    getHttp() {
-        return forkJoin({
-            alerts: this.alertService.updateAlerts(),
-            markers: this.markerService.updateMarkers(),
-        });
+    getUpdates() {
+        return combineLatest(
+            this.alertService.alertsSubject,
+            this.markerService.markersSubject
+        );
     }
 
-    getMarkers() {
-        this.getHttp().subscribe((data) => {
-            if (data.alerts.length !== 0) {
+    UpdateMarkers() {
+        this.getUpdates().subscribe((data) => {
+            if (data[0].length !== 0) {
                 this.alert.play();
             } else {
                 this.alert.pause();
             }
+            this.renderMarkersArr(data[1]);
+            //console.log(this.vizualMarkers);
             let currentTime = Date.parse(new Date().toISOString());
-            for (const entry of data.markers) {
+            for (const entry of this.markers) {
                 let markerTime = Date.parse(entry.timeStamp);
                 let markerIcon = environment.markers.marker_on_icon;
-                if (data.alerts.find((i) => i === entry.deviceId)) {
+                if (data[0].find((i) => i === entry.deviceId)) {
                     markerIcon = environment.markers.marker_alert_icon;
-                } else if (entry.isOnline(currentTime, markerTime)) {
+                } else if (
+                    new MarkerObj(entry).isOnline(currentTime, markerTime)
+                ) {
                     markerIcon = environment.markers.marker_off_icon;
                 }
                 let markerSetIcon: IconOptions = {
@@ -134,6 +139,31 @@ export class MapComponent implements OnDestroy {
         this.alertsSubscription = timer(0, environment.time.alerts_update_time)
             .pipe(switchMap(() => this.alertService.updateAlerts()))
             .subscribe(() => {});
+    }
+
+    private renderMarkersArr(arr) {
+        let unique = this.markers.filter(
+            (i) => arr.some((j) => j.deviceId === i.deviceId) === false
+        );
+        this.markers = arr.concat(unique);
+        let currentTime = Date.parse(new Date().toISOString());
+        let logoutMarkers = [];
+        logoutMarkers = this.markers.filter(
+            (i) =>
+                currentTime - Date.parse(i.timeStamp) >
+                environment.time.logout_delay
+        );
+        logoutMarkers.map((i) => this.deleteLogoutMarkers(i));
+    }
+
+    private deleteLogoutMarkers(marker) {
+        this.markers = this.markers.filter(
+            (i) => i.deviceId !== marker.deviceId
+        );
+        if (this.vizualMarkers[marker.deviceId]) {
+            this.vizualMarkers[marker.deviceId].removeFrom(this.map);
+            delete this.vizualMarkers[marker.deviceId];
+        }
     }
 
     private handleMarkerClick(id) {
