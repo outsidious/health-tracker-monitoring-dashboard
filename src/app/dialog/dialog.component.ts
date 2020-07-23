@@ -1,9 +1,11 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnDestroy, Inject } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { SensorVal, SensorModel } from "../sensor/sensor.model";
 import { Subscription, timer } from "rxjs";
 import { SensorsService } from "../sensor/sensors.service";
+import { environment } from "../../environments/environment";
+import { switchMap } from "rxjs/operators";
 
 export interface DialogData {
     markerId: string;
@@ -15,7 +17,7 @@ export interface DialogData {
     templateUrl: "dialog.component.html",
     styleUrls: ["./dialog.component.css"],
 })
-export class DialogComponent {
+export class DialogComponent implements OnDestroy {
     isLoaded: boolean;
     sensorSubscription: Subscription;
 
@@ -31,18 +33,24 @@ export class DialogComponent {
         this.sensorsService.sensorsSubject.subscribe((data) => {
             this.data.sensorsValues = [];
             for (const sensor of data) {
+                let dateTimeStamp = new Date(sensor.timeStamp);
                 this.data.sensorsValues.push({
                     key: sensor.sensorType,
                     val: {
-                        currentValue: sensor.currentValue,
+                        currentValue: sensor.currentValue
+                            .toString()
+                            .replace(/,/gi, ", "),
                         alertState: sensor.alertState,
+                        timeStamp: dateTimeStamp.toLocaleString(),
                     },
                 });
             }
             this.isLoaded = false;
         });
-        this.sensorsService
-            .updateSensorsValues(this.data.markerId)
+        this.sensorSubscription = timer(0, environment.time.sensors_update_time)
+            .pipe(
+                switchMap(() => this.sensorsService.updateSensorsValues(this.data.markerId))
+            )
             .subscribe(() => {
                 this.setIsLoadedTrue();
             });
@@ -54,5 +62,11 @@ export class DialogComponent {
 
     setIsLoadedTrue() {
         this.isLoaded = true;
+    }
+
+    ngOnDestroy() {
+        if (this.sensorSubscription) {
+            this.sensorSubscription.unsubscribe();
+        }
     }
 }

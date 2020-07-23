@@ -1,15 +1,22 @@
 <h1 mat-dialog-title>
-    Id: <i> {{ data.markerId }} </i>
+    Id: <b><i> {{ data.markerId }} </i></b>
 </h1>
+<br/>
 <ng-container *ngIf="isLoaded">
     <table cellpadding="5">
         <thead>
+            <th align="middle"> {{ "Sensor Type" }} </th>
+            <th align="middle"> {{ "Last Value" }} </th>
+            <th align="middle"> {{ "Last Update" }} </th>
             <tr *ngFor="let elem of data.sensorsValues">
-                <th align="left"> 
-                    {{ elem.key }} 
-                </th>
+                <td align="left"> 
+                    <i> {{ elem.key }} </i> 
+                </td>
                 <td align="left" [ngStyle]="{color: elem.val.alertState === true ? 'red' : 'green'}">
                     {{ elem.val.currentValue }}
+                </td>
+                <td align="left">
+                    {{ elem.val.timeStamp }}
                 </td>
             </tr>
         </thead>
@@ -18,6 +25,7 @@
 <ng-container *ngIf="!isLoaded">
     <mat-progress-spinner mode="indeterminate" style="margin: 0 auto;" diameter="150"> </mat-progress-spinner>
 </ng-container>
+<br/>
 <br/>
 <p>
     <button mat-raised-button (click)="close()"> Close </button>

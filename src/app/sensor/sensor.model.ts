@@ -7,6 +7,7 @@ export class SensorModel {
 }
 
 export class SensorVal {
-    currentValue: any;
+    currentValue: string;
     alertState: boolean;
+    timeStamp: string;
 }
