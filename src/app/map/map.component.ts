@@ -1,13 +1,4 @@
-import {
-    Component,
-    OnInit,
-    OnDestroy,
-    ComponentFactoryResolver,
-    ComponentRef,
-    Injector,
-    DoCheck,
-    NgZone,
-} from "@angular/core";
+import { Component, OnDestroy, NgZone } from "@angular/core";
 import {
     icon,
     latLng,
@@ -153,7 +144,7 @@ export class MapComponent implements OnDestroy {
                 currentTime - Date.parse(i.timeStamp) >
                 environment.time.logout_delay
         );
-        logoutMarkers.map((i) => this.deleteLogoutMarkers(i));
+        //logoutMarkers.map((i) => this.deleteLogoutMarkers(i));
     }
 
     private deleteLogoutMarkers(marker) {

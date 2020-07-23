@@ -4,7 +4,6 @@ import { environment } from "../../environments/environment";
 import { BehaviorSubject } from "rxjs";
 import { SensorModel } from "./sensor.model";
 import { map } from "rxjs/operators";
-import { of } from "rxjs";
 
 @Injectable({ providedIn: "root" })
 export class SensorsService {
@@ -18,7 +17,7 @@ export class SensorsService {
             .pipe(
                 map((markers: SensorModel[]) => {
                     this.sensorsSubject.next(markers);
-                    return of(markers);
+                    return markers;
                 })
             );
     }
